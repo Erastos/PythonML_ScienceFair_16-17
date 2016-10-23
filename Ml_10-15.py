@@ -1,6 +1,7 @@
 from sklearn import svm, tree, naive_bayes
 import csv
 import random
+from statistics import mean
 
 
 def gather_data():
@@ -71,29 +72,28 @@ def assign_data():
             positron_list.append([element.p, PtoNList[i2]])
         i2 += 1
     positron_list.pop(0)
-
-    stable_list_predict = random.sample(stable_list, 5)
+    stable_list_predict = random.sample(stable_list, 10)
     i = 0
     for element in stable_list:
         if element in stable_list_predict:
             stable_list.pop(i)
         i += 1
 
-    alpha_list_predict = random.sample(alpha_list, 5)
+    alpha_list_predict = random.sample(alpha_list, 10)
     i = 0
     for element in alpha_list:
         if element in alpha_list_predict:
             alpha_list.pop(i)
         i += 1
 
-    beta_list_predict = random.sample(beta_list, 5)
+    beta_list_predict = random.sample(beta_list, 10)
     i = 0
     for element in beta_list:
         if element in beta_list_predict:
             beta_list.pop(i)
         i += 1
 
-    positron_list_predict = random.sample(positron_list, 5)
+    positron_list_predict = random.sample(positron_list, 10)
     i = 0
     for element in positron_list:
         if element in positron_list_predict:
@@ -161,8 +161,11 @@ def ml_test():
         Positron_score_f = (Positron_score/len(positron_results))
         Positron_score_p = Positron_score_f * 100
 
+        percentage_list = [Stable_score_p, Alpha_score_p, Beta_Score_p, Positron_score_p]
+        average_p = mean(percentage_list)
+
         return (Stable_score, Stable_score_f, Stable_score_p, Alpha_score, Alpha_score_f, Alpha_score_p, Beta_Score,
-                Beta_Score_f, Beta_Score_p, Positron_score, Positron_score_f, Positron_score_p)
+                Beta_Score_f, Beta_Score_p, Positron_score, Positron_score_f, Positron_score_p, average_p)
 
     def tree_test():
         clf = tree.DecisionTreeClassifier()
@@ -200,8 +203,11 @@ def ml_test():
         Positron_score_f = (Positron_score / len(positron_results))
         Positron_score_p = Positron_score_f * 100
 
+        percentage_list = [Stable_score_p, Alpha_score_p, Beta_Score_p, Positron_score_p]
+        average_p = mean(percentage_list)
+
         return (Stable_score, Stable_score_f, Stable_score_p, Alpha_score, Alpha_score_f, Alpha_score_p, Beta_Score,
-                Beta_Score_f, Beta_Score_p, Positron_score, Positron_score_f, Positron_score_p)
+                Beta_Score_f, Beta_Score_p, Positron_score, Positron_score_f, Positron_score_p, average_p)
 
     def Native_Bayes_Test():
         clf = naive_bayes.GaussianNB()
@@ -239,35 +245,46 @@ def ml_test():
         Positron_score_f = (Positron_score / len(positron_results))
         Positron_score_p = Positron_score_f * 100
 
+        percentage_list = [Stable_score_p, Alpha_score_p, Beta_Score_p, Positron_score_p]
+        average_p = mean(percentage_list)
         return (Stable_score, Stable_score_f, Stable_score_p, Alpha_score, Alpha_score_f, Alpha_score_p, Beta_Score,
-                Beta_Score_f, Beta_Score_p, Positron_score, Positron_score_f, Positron_score_p)
-    print(
+                Beta_Score_f, Beta_Score_p, Positron_score, Positron_score_f, Positron_score_p, average_p)
+
+    Trial = '''
+
+    SVC:
+        Stable Score: %s
+        Alpha Score: %s
+        Beta Score: %s
+        Positron Score: %s
+        Average Score: %s
+
+    Tree:
+        Stable Score: %s
+        Alpha Score: %s
+        Beta Score: %s
+        Positron Score: %s
+        Average Score: %s
+
+    Native Bayes:
+        Stable Score: %s
+        Alpha Score: %s
+        Beta Score: %s
+        Positron Score: %s
+        Average Score: %s
+
+        ''' % (svm_test()[2], svm_test()[5], svm_test()[8], svm_test()[11], svm_test()[12],
+               tree_test()[2],tree_test()[5], tree_test()[8], tree_test()[11], tree_test()[12], Native_Bayes_Test()[2],
+               Native_Bayes_Test()[5], Native_Bayes_Test()[8], Native_Bayes_Test()[11], Native_Bayes_Test()[12])
+
+    f = open('data.txt', 'a')
+    f.write('   ----------------------------')
+    f.write('\n')
+    f.write('\n')
+    f.write(Trial)
+    f.close()
 
 
-        '''         SVC:
-                Stable Score: %s
-                Alpha Score: %s
-                Beta Score: %s
-                Positron Score: %s
-
-        Tree:
-                Stable Score: %s
-                Alpha Score: %s
-                Beta Score: %s
-                Positron Score: %s
-
-        Native Bayes:
-                Stable Score: %s
-                Alpha Score: %s
-                Beta Score: %s
-                Positron Score: %s''' % (svm_test()[2], svm_test()[5], svm_test()[8], svm_test()[11], tree_test()[2],
-                                         tree_test()[5], tree_test()[8], tree_test()[11], Native_Bayes_Test()[2],
-                                         Native_Bayes_Test()[5], Native_Bayes_Test()[8], Native_Bayes_Test()[11])
-
-
-
-
-
-
-    )
-ml_test()
+if __name__ == '__main__':
+    for number in range(20):
+        ml_test()
